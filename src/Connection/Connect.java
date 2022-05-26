@@ -14,7 +14,7 @@ public class Connect {
         String url = "net.sourceforge.jtds.jdbc.Driver";
         try {
             Class.forName(url);
-            String dbUrl = "jdbc:jtds:sqlserver://LAPTOP-6IBE59SJ:1433/QuanLiBaoHiem;instance=SQLEXPRESS;user=sa;password=123456789";
+            String dbUrl = "jdbc:jtds:sqlserver://LAPTOP-6IBE59SJ:1433/quanlydienthoai;instance=SQLEXPRESS;user=sa;password=123456789";
             return DriverManager.getConnection(dbUrl);
            
         } catch (ClassNotFoundException | SQLException ex) {

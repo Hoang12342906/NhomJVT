@@ -4,6 +4,9 @@
  */
 package UI;
 
+import QuanLyNhanVien.Quanlynhanvien;
+import quanlydienthoai.Quanlydienthoai;
+
 /**
  *
  * @author WUWU
@@ -47,6 +50,11 @@ public class Main extends javax.swing.JFrame {
         BTnhanvien.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         BTnhanvien.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_assistant_30px.png"))); // NOI18N
         BTnhanvien.setText("NHÂN VIÊN");
+        BTnhanvien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BTnhanvienActionPerformed(evt);
+            }
+        });
 
         BTsanpham.setBackground(new java.awt.Color(0, 255, 51));
         BTsanpham.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -157,8 +165,15 @@ public class Main extends javax.swing.JFrame {
 
     private void BTsanphamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTsanphamActionPerformed
         // TODO add your handling code here:
- 
+        new Quanlydienthoai().setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_BTsanphamActionPerformed
+
+    private void BTnhanvienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTnhanvienActionPerformed
+        // TODO add your handling code here:
+        new Quanlynhanvien().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_BTnhanvienActionPerformed
 
     /**
      * @param args the command line arguments
