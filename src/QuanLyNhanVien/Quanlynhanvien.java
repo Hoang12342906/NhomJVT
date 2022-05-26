@@ -220,9 +220,9 @@ public class Quanlynhanvien extends javax.swing.JFrame {
                 .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(433, 433, 433)
+                .addGap(440, 440, 440)
                 .addComponent(LammoiBT)
-                .addGap(46, 46, 46)
+                .addGap(40, 40, 40)
                 .addComponent(XacnhanBT)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
