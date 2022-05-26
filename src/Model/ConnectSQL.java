@@ -28,9 +28,9 @@ public class ConnectSQL {
     public void connect() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String url = "jdbc:sqlserver://ADMIN\\SQLEXPRESS:1466;databaseName=quanlydienthoai";
+            String url = "jdbc:sqlserver://LAPTOP-6IBE59SJ:1433;databaseName=quanlydienthoai";
             String username = "sa";
-            String password = "1";
+            String password = "123456789";
             try {
                 conn = DriverManager.getConnection(url, username, password);
             } catch (SQLException ex) {
