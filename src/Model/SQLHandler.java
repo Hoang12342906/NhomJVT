@@ -5,6 +5,7 @@
 package Model;
 
 import Connection.Connect;
+import java.awt.HeadlessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -95,4 +97,38 @@ public class SQLHandler {
             Logger.getLogger(SQLHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     } 
+ public NhanVien Login(NhanVien bh) {
+        Connection conn = Connect.ConnectSQL();
+        
+        try {
+           PreparedStatement ps = conn.prepareStatement("select * from Nhanvien where maNV = ?");
+           ps.setString(1, bh.getMaNV());
+           ResultSet result = ps.executeQuery();
+            
+           if(result.next()) {
+               String password = bh.getPassword();
+               if(!password.equals(result.getString("password"))) {
+                   JOptionPane.showMessageDialog(null, "Password incorect!");
+                   return null;
+               } else {
+                    NhanVien user = new NhanVien();
+                    user.setMaNV(result.getString("maBH"));
+                    user.setPassword(result.getString("pass"));
+                    user.setHoTen(result.getString("hoTen"));
+                    user.setSDT(result.getString("SDT"));
+                    user.setGioiTinh(result.getString("gioiTinh"));
+               
+                    return user;
+               }  
+           } else {
+               JOptionPane.showMessageDialog(null,"Account doesn't exist!");
+           }
+           
+        } catch (HeadlessException | SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+ 
+ 
 }
