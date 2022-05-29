@@ -4,12 +4,19 @@
  */
 package QuanLyNhanVien;
 
+import Connection.Connect;
+import static Connection.Connect.ConnectSQL;
 import Model.NhanVien;
 import Model.SQLHandler;
 import UI.Main;
+import com.sun.jdi.connect.spi.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
+import static javax.management.remote.JMXConnectorFactory.connect;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -17,7 +24,7 @@ import javax.swing.DefaultComboBoxModel;
  */
 public class Quanlynhanvien extends javax.swing.JFrame {
     SQLHandler handle = new SQLHandler();
-    DefaultTableModel infoModel ;
+    DefaultTableModel infoModel, searchModel ;
    
     public Quanlynhanvien() {
         initComponents();
@@ -27,7 +34,7 @@ public class Quanlynhanvien extends javax.swing.JFrame {
         
         infoModel = new DefaultTableModel(){
             @Override
-            public boolean isCellEditable(int row, int column) {
+                public boolean isCellEditable(int row, int column) {
                 return false; // khong cho phep nguoi dung Edit du lieu trong bang
             }       
         };
@@ -42,7 +49,23 @@ public class Quanlynhanvien extends javax.swing.JFrame {
         
         InfoTable.setModel(infoModel);
         
+         
+        searchModel = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // khong cho phep nguoi dung Edit du lieu trong bang
+            }
+            
+        };
         
+        searchModel.addColumn("Mã nhân viên");
+        searchModel.addColumn("Họ tên");
+        searchModel.addColumn("Số ĐT");
+        searchModel.addColumn("Giới tính");
+        searchModel.addColumn("Pass Word");
+
+        
+        searchTable.setModel(searchModel);
         
     }
 
@@ -60,6 +83,8 @@ public class Quanlynhanvien extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         InfoTable = new javax.swing.JTable();
+        Xoa_BT = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -76,11 +101,11 @@ public class Quanlynhanvien extends javax.swing.JFrame {
         XacnhanBT = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
+        searchTF = new javax.swing.JTextField();
+        timkiem_BT = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        InfoTable1 = new javax.swing.JTable();
+        searchTable = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
@@ -110,20 +135,43 @@ public class Quanlynhanvien extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(InfoTable);
 
+        Xoa_BT.setBackground(new java.awt.Color(255, 0, 0));
+        Xoa_BT.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        Xoa_BT.setText("Xóa");
+        Xoa_BT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Xoa_BTActionPerformed(evt);
+            }
+        });
+
+        jButton2.setBackground(new java.awt.Color(255, 0, 0));
+        jButton2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jButton2.setText("Cập nhập");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 825, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 825, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(70, 70, 70)
+                        .addComponent(Xoa_BT, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 174, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Xoa_BT, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(52, 52, 52))
         );
 
         jTabbedPane1.addTab("THÔNG TIN ", jPanel2);
@@ -202,7 +250,7 @@ public class Quanlynhanvien extends javax.swing.JFrame {
                 .addContainerGap(36, Short.MAX_VALUE))
         );
 
-        LammoiBT.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        LammoiBT.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         LammoiBT.setForeground(new java.awt.Color(153, 0, 0));
         LammoiBT.setText("Làm mới");
         LammoiBT.addActionListener(new java.awt.event.ActionListener() {
@@ -211,7 +259,7 @@ public class Quanlynhanvien extends javax.swing.JFrame {
             }
         });
 
-        XacnhanBT.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        XacnhanBT.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         XacnhanBT.setForeground(new java.awt.Color(153, 0, 0));
         XacnhanBT.setText("Xác nhận");
         XacnhanBT.addActionListener(new java.awt.event.ActionListener() {
@@ -226,14 +274,14 @@ public class Quanlynhanvien extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(LammoiBT)
+                        .addGap(53, 53, 53)
+                        .addComponent(XacnhanBT)))
                 .addContainerGap())
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(440, 440, 440)
-                .addComponent(LammoiBT)
-                .addGap(40, 40, 40)
-                .addComponent(XacnhanBT)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -242,19 +290,24 @@ public class Quanlynhanvien extends javax.swing.JFrame {
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(XacnhanBT, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LammoiBT, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(LammoiBT, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(XacnhanBT, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Thêm", jPanel3);
 
-        jPanel6.setBackground(new java.awt.Color(255, 255, 153));
+        jPanel6.setBackground(new java.awt.Color(204, 255, 255));
 
         jPanel7.setBackground(new java.awt.Color(153, 255, 153));
-        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Search", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14), new java.awt.Color(0, 0, 153))); // NOI18N
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "TÌm kiếm theo MNV", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14), new java.awt.Color(0, 0, 153))); // NOI18N
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search-icon-32.png"))); // NOI18N
+        timkiem_BT.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search-icon-32.png"))); // NOI18N
+        timkiem_BT.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                timkiem_BTActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -262,9 +315,9 @@ public class Quanlynhanvien extends javax.swing.JFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap(153, Short.MAX_VALUE)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchTF, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(109, 109, 109)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(timkiem_BT, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(149, 149, 149))
         );
         jPanel7Layout.setVerticalGroup(
@@ -272,15 +325,15 @@ public class Quanlynhanvien extends javax.swing.JFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField1)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(searchTF)
+                    .addComponent(timkiem_BT, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(32, Short.MAX_VALUE))
         );
 
         jPanel8.setBackground(new java.awt.Color(204, 255, 153));
 
-        InfoTable1.setBackground(new java.awt.Color(255, 204, 204));
-        InfoTable1.setModel(new javax.swing.table.DefaultTableModel(
+        searchTable.setBackground(new java.awt.Color(255, 204, 204));
+        searchTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -291,7 +344,7 @@ public class Quanlynhanvien extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane3.setViewportView(InfoTable1);
+        jScrollPane3.setViewportView(searchTable);
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -419,9 +472,44 @@ public class Quanlynhanvien extends javax.swing.JFrame {
         bh.setSDT(sdtTF.getText());
         bh.setGioiTinh(gioitinhTF.getText());
         bh.setPassword(passwordTF.getText());
-        
+        InfoTable.removeAll();
+        SetModelTable(handle.getAllNhanVien());
         handle.AddNhanVien(bh);
     }//GEN-LAST:event_XacnhanBTActionPerformed
+
+    private void timkiem_BTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timkiem_BTActionPerformed
+  
+    
+        List<NhanVien> resultSearch = handle.GetResultSearchBH(null,searchTF.getText());
+        searchModel.setRowCount(0);
+        
+        
+        if (!resultSearch.isEmpty()) {
+            SetModelSearchTable(resultSearch);
+        } else{
+          JOptionPane.showMessageDialog(this, "Không tìm thấy!");
+        }
+    }//GEN-LAST:event_timkiem_BTActionPerformed
+
+    private void Xoa_BTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Xoa_BTActionPerformed
+        int result = JOptionPane.showConfirmDialog(null,"Bạn có chắc chắn muốn xóa không");
+        if(result == 0 ){
+            int position = InfoTable.getSelectedRow();
+            String data = InfoTable.getModel().getValueAt(position, 0).toString();
+              try{
+                 java.sql.Connection conn = Connect.ConnectSQL();
+                String query = "DELETE FROM dbo.[Nhanvien] WHERE MaNV = ? ";
+                PreparedStatement ps = conn.prepareStatement(query);
+                ps.setString(1,data);
+                ps.executeUpdate();
+                InfoTable.removeAll();
+                SetModelTable(handle.getAllNhanVien());
+                JOptionPane.showMessageDialog(null,"Xóa thành công");
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
+    }                    
+    }//GEN-LAST:event_Xoa_BTActionPerformed
 
     /**
      * @param args the command line arguments
@@ -464,12 +552,18 @@ public class Quanlynhanvien extends javax.swing.JFrame {
                            ,bh.getSDT(),bh.getGioiTinh(),bh.getPassword()});
        }
     }
+      public void SetModelSearchTable(List<NhanVien> bhs) {
+        for(NhanVien bh : bhs) {
+           searchModel.addRow(new Object[] {bh.getMaNV(),bh.getHoTen()
+                           ,bh.getSDT(),bh.getGioiTinh(),bh.getPassword()});
+       }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable InfoTable;
-    private javax.swing.JTable InfoTable1;
     private javax.swing.JButton LammoiBT;
     private javax.swing.JButton XacnhanBT;
+    private javax.swing.JButton Xoa_BT;
     private javax.swing.JTextField gioitinhTF;
     private javax.swing.JTextField hotenTF;
     private javax.swing.JButton jButton1;
@@ -491,10 +585,12 @@ public class Quanlynhanvien extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField manvTF;
     private javax.swing.JTextField passwordTF;
     private javax.swing.JTextField sdtTF;
+    private javax.swing.JTextField searchTF;
+    private javax.swing.JTable searchTable;
+    private javax.swing.JButton timkiem_BT;
     // End of variables declaration//GEN-END:variables
 
 

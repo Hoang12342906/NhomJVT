@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.text.TableView;
+
 
 /**
  *
@@ -130,5 +132,30 @@ public class SQLHandler {
         return null;
     }
  
- 
-}
+   public List<NhanVien> GetResultSearchBH(String searchType,String valueSearch) {
+        List<NhanVien> staffs = new ArrayList<>();
+        Connection conn = Connect.ConnectSQL();
+        
+        try {
+           PreparedStatement ps = conn.prepareStatement("select * from Nhanvien where maNV = ?");
+           ps.setObject(1, valueSearch);  
+           ResultSet result = ps.executeQuery();
+    
+            while(result.next()) {
+                NhanVien staff = new NhanVien();  
+                staff.setMaNV(result.getString("maNV"));
+                staff.setHoTen(result.getString("hoTen"));
+                staff.setSDT(result.getString("SDT"));    
+                staff.setGioiTinh(result.getString("gioiTinh"));
+                staff.setPassword(result.getString("pass"));
+                staffs.add(staff);
+            }
+            return staffs;
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+ }
+
