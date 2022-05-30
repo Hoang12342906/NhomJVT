@@ -66,6 +66,8 @@ public class SQLHandler {
             PreparedStatement ps = conn.prepareStatement("select * from Nhanvien");
             ResultSet result = ps.executeQuery();
             
+       
+            
             while (result.next()) {
                 NhanVien bh = new NhanVien();
                 bh.setMaNV(result.getString("maNV"));
@@ -87,7 +89,7 @@ public class SQLHandler {
         Connection conn = Connect.ConnectSQL();
         
         try {
-            PreparedStatement ps = conn.prepareStatement("insert into Nhanvien values (?,?,?,?,?)");
+            PreparedStatement ps = conn.prepareStatement("insert into Nhanvien(maNV, hoTen, gioiTinh, SDT, Pass) " +"values (?,?,?,?,?)");
             ps.setString(1, bh.getMaNV());
             ps.setString(2, bh.getHoTen());
             ps.setString(3, bh.getGioiTinh());
@@ -95,6 +97,9 @@ public class SQLHandler {
             ps.setString(5, bh.getPassword());
             
             int result = ps.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null,"Thêm thành công");
+            
         } catch (SQLException ex) {
             Logger.getLogger(SQLHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -114,7 +119,7 @@ public class SQLHandler {
                    return null;
                } else {
                     NhanVien user = new NhanVien();
-                    user.setMaNV(result.getString("maBH"));
+                    user.setMaNV(result.getString("maNV"));
                     user.setPassword(result.getString("pass"));
                     user.setHoTen(result.getString("hoTen"));
                     user.setSDT(result.getString("SDT"));

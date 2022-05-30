@@ -17,6 +17,7 @@ import static javax.management.remote.JMXConnectorFactory.connect;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 
 /**
  *
@@ -85,6 +86,7 @@ public class Quanlynhanvien extends javax.swing.JFrame {
         InfoTable = new javax.swing.JTable();
         Xoa_BT = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -148,6 +150,13 @@ public class Quanlynhanvien extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jButton2.setText("Cập nhập");
 
+        jButton3.setText("jButton3");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -158,6 +167,8 @@ public class Quanlynhanvien extends javax.swing.JFrame {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 825, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(170, 170, 170)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(70, 70, 70)
                         .addComponent(Xoa_BT, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -170,7 +181,8 @@ public class Quanlynhanvien extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Xoa_BT, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton3))
                 .addGap(52, 52, 52))
         );
 
@@ -465,16 +477,17 @@ public class Quanlynhanvien extends javax.swing.JFrame {
     }//GEN-LAST:event_LammoiBTActionPerformed
 
     private void XacnhanBTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_XacnhanBTActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here:   
+        InfoTable.removeAll();
         NhanVien bh = new NhanVien();
         bh.setMaNV(manvTF.getText());
         bh.setHoTen(hotenTF.getText());
         bh.setSDT(sdtTF.getText());
         bh.setGioiTinh(gioitinhTF.getText());
         bh.setPassword(passwordTF.getText());
-        InfoTable.removeAll();
-        SetModelTable(handle.getAllNhanVien());
         handle.AddNhanVien(bh);
+        clearData(InfoTable);
+        SetModelTable(handle.getAllNhanVien());
     }//GEN-LAST:event_XacnhanBTActionPerformed
 
     private void timkiem_BTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timkiem_BTActionPerformed
@@ -497,12 +510,12 @@ public class Quanlynhanvien extends javax.swing.JFrame {
             int position = InfoTable.getSelectedRow();
             String data = InfoTable.getModel().getValueAt(position, 0).toString();
               try{
-                 java.sql.Connection conn = Connect.ConnectSQL();
+                java.sql.Connection conn = Connect.ConnectSQL();
                 String query = "DELETE FROM dbo.[Nhanvien] WHERE MaNV = ? ";
                 PreparedStatement ps = conn.prepareStatement(query);
                 ps.setString(1,data);
                 ps.executeUpdate();
-                InfoTable.removeAll();
+                clearData(InfoTable);
                 SetModelTable(handle.getAllNhanVien());
                 JOptionPane.showMessageDialog(null,"Xóa thành công");
         }catch(SQLException ex){
@@ -510,6 +523,11 @@ public class Quanlynhanvien extends javax.swing.JFrame {
         }
     }                    
     }//GEN-LAST:event_Xoa_BTActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        clearData(InfoTable);
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -558,6 +576,12 @@ public class Quanlynhanvien extends javax.swing.JFrame {
                            ,bh.getSDT(),bh.getGioiTinh(),bh.getPassword()});
        }
     }
+    public void clearData(JTable dftableModel) {
+        int n = dftableModel.getRowCount() - 1;
+        for (int i = n; i >= 0; i--) {
+        infoModel.removeRow(i);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable InfoTable;
@@ -568,6 +592,7 @@ public class Quanlynhanvien extends javax.swing.JFrame {
     private javax.swing.JTextField hotenTF;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

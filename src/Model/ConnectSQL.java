@@ -6,7 +6,6 @@ package Model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import com.microsoft.sqlserver.jdbc.SQLServerDriver;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;

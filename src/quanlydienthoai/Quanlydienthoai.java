@@ -5,6 +5,7 @@
 package quanlydienthoai;
 
 import Model.SQLHandler;
+import UI.Main;
 import java.sql.ResultSet;
 import javax.swing.table.DefaultTableModel;
 
@@ -137,6 +138,11 @@ public class Quanlydienthoai extends javax.swing.JFrame {
 
         jButton4.setBackground(new java.awt.Color(0, 0, 0));
         jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons8_exit_30px.png"))); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -255,6 +261,11 @@ public class Quanlydienthoai extends javax.swing.JFrame {
         clearData(dftable);
         setTableProduct();
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        new Main().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     public void setLabelDT() {
         try {

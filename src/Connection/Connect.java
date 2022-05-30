@@ -22,4 +22,14 @@ public class Connect {
         }
         return null;
     }
+    public static void closeConnection(Connection con){
+        if(con != null){
+            try{
+                con.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+            }
+        }
+    }
+    
 }
