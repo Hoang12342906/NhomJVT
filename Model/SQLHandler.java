@@ -5,6 +5,7 @@
 package Model;
 
 import Connection.Connect;
+import java.awt.HeadlessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.text.TableView;
+
 
 /**
  *
@@ -62,6 +66,8 @@ public class SQLHandler {
             PreparedStatement ps = conn.prepareStatement("select * from Nhanvien");
             ResultSet result = ps.executeQuery();
             
+       
+            
             while (result.next()) {
                 NhanVien bh = new NhanVien();
                 bh.setMaNV(result.getString("maNV"));
@@ -83,7 +89,7 @@ public class SQLHandler {
         Connection conn = Connect.ConnectSQL();
         
         try {
-            PreparedStatement ps = conn.prepareStatement("insert into Nhanvien values (?,?,?,?,?)");
+            PreparedStatement ps = conn.prepareStatement("insert into Nhanvien(maNV, hoTen, gioiTinh, SDT, Pass) " +"values (?,?,?,?,?)");
             ps.setString(1, bh.getMaNV());
             ps.setString(2, bh.getHoTen());
             ps.setString(3, bh.getGioiTinh());
@@ -91,8 +97,70 @@ public class SQLHandler {
             ps.setString(5, bh.getPassword());
             
             int result = ps.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null,"Thêm thành công");
+            
         } catch (SQLException ex) {
             Logger.getLogger(SQLHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     } 
-}
+ public NhanVien Login(NhanVien bh) {
+        Connection conn = Connect.ConnectSQL();
+        
+        try {
+           PreparedStatement ps = conn.prepareStatement("select * from Nhanvien where maNV = ?");
+           ps.setString(1, bh.getMaNV());
+           ResultSet result = ps.executeQuery();
+            
+           if(result.next()) {
+               String password = bh.getPassword();
+               if(!password.equals(result.getString("password"))) {
+                   JOptionPane.showMessageDialog(null, "Password incorect!");
+                   return null;
+               } else {
+                    NhanVien user = new NhanVien();
+                    user.setMaNV(result.getString("maNV"));
+                    user.setPassword(result.getString("pass"));
+                    user.setHoTen(result.getString("hoTen"));
+                    user.setSDT(result.getString("SDT"));
+                    user.setGioiTinh(result.getString("gioiTinh"));
+               
+                    return user;
+               }  
+           } else {
+               JOptionPane.showMessageDialog(null,"Account doesn't exist!");
+           }
+           
+        } catch (HeadlessException | SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+ 
+   public List<NhanVien> GetResultSearchBH(String searchType,String valueSearch) {
+        List<NhanVien> staffs = new ArrayList<>();
+        Connection conn = Connect.ConnectSQL();
+        
+        try {
+           PreparedStatement ps = conn.prepareStatement("select * from Nhanvien where maNV = ?");
+           ps.setObject(1, valueSearch);  
+           ResultSet result = ps.executeQuery();
+    
+            while(result.next()) {
+                NhanVien staff = new NhanVien();  
+                staff.setMaNV(result.getString("maNV"));
+                staff.setHoTen(result.getString("hoTen"));
+                staff.setSDT(result.getString("SDT"));    
+                staff.setGioiTinh(result.getString("gioiTinh"));
+                staff.setPassword(result.getString("pass"));
+                staffs.add(staff);
+            }
+            return staffs;
+        } catch (SQLException ex) {
+            Logger.getLogger(SQLHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+ }
+
